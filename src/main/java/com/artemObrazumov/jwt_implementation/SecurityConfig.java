@@ -1,10 +1,14 @@
 package com.artemObrazumov.jwt_implementation;
 
 import com.artemObrazumov.jwt_implementation.token.JWTAuthConfigurer;
+import com.artemObrazumov.jwt_implementation.token.deserializer.AccessTokenJwsStringDeserializer;
+import com.artemObrazumov.jwt_implementation.token.deserializer.RefreshTokenJwsStringDeserializer;
 import com.artemObrazumov.jwt_implementation.token.serializer.AccessTokenJwsStringSerializer;
 import com.artemObrazumov.jwt_implementation.token.serializer.RefreshTokenJweStringSerializer;
+import com.nimbusds.jose.crypto.DirectDecrypter;
 import com.nimbusds.jose.crypto.DirectEncrypter;
 import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +35,16 @@ public class SecurityConfig {
         jwtAuthConfigurer.setRefreshTokenStringSerializer(
                 new RefreshTokenJweStringSerializer(
                         new DirectEncrypter(OctetSequenceKey.parse(refreshTokenKey))
+                )
+        );
+        jwtAuthConfigurer.setAccessTokenStringDeserializer(
+                new AccessTokenJwsStringDeserializer(
+                        new MACVerifier(OctetSequenceKey.parse(accessTokenKey))
+                )
+        );
+        jwtAuthConfigurer.setRefreshTokenStringDeserializer(
+                new RefreshTokenJwsStringDeserializer(
+                        new DirectDecrypter(OctetSequenceKey.parse(refreshTokenKey))
                 )
         );
         return jwtAuthConfigurer;
