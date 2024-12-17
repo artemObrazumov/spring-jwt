@@ -1,6 +1,7 @@
 package com.artemObrazumov.jwt_implementation.token;
 
 import com.artemObrazumov.jwt_implementation.token.converter.JWTAuthConverter;
+import com.artemObrazumov.jwt_implementation.token.filter.RequestAccessTokenFilter;
 import com.artemObrazumov.jwt_implementation.token.filter.RequestJwtTokenFilter;
 import com.artemObrazumov.jwt_implementation.token.user.TokenAuthenticationUserDetailService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -57,6 +58,11 @@ public class JWTAuthConfigurer extends AbstractHttpConfigurer<JWTAuthConfigurer,
         authenticationProvider.setPreAuthenticatedUserDetailsService(new TokenAuthenticationUserDetailService());
         builder.addFilterBefore(jwtAuthFilter, CsrfFilter.class)
                 .authenticationProvider(authenticationProvider);
+
+        var accessTokenFilter = new RequestAccessTokenFilter();
+        accessTokenFilter.setAccessTokenStringSerializer(this.accessTokenStringSerializer);
+
+        builder.addFilterAfter(accessTokenFilter, ExceptionTranslationFilter.class);
     }
 
     public void setRefreshTokenStringSerializer(Function<Token, String> refreshTokenStringSerializer) {

@@ -19,4 +19,8 @@ public class TokenUser extends User {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
         this.token = token;
     }
+
+    public Token getToken() {
+        return token;
+    }
 }
