@@ -43,7 +43,7 @@ public class RequestAccessTokenFilter extends OncePerRequestFilter {
                 if (context != null && context.getAuthentication() instanceof PreAuthenticatedAuthenticationToken &&
                         context.getAuthentication().getPrincipal() instanceof TokenUser user &&
                         context.getAuthentication().getAuthorities()
-                                .contains(new SimpleGrantedAuthority("JWT_REFRESH"))
+                                .contains(new SimpleGrantedAuthority("JWT_LOGOUT"))
                 ) {
                     var accessToken = this.accessTokenFactory.apply(user.getToken());
                     response.setStatus(HttpServletResponse.SC_OK);

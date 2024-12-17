@@ -12,6 +12,7 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -24,7 +25,8 @@ public class SecurityConfig {
     @Bean
     public JWTAuthConfigurer jwtAuthConfigurer(
             @Value("${jwt.access-token-key}") String accessTokenKey,
-            @Value("${jwt.refresh-token-key}") String refreshTokenKey
+            @Value("${jwt.refresh-token-key}") String refreshTokenKey,
+            JdbcTemplate jdbcTemplate
     ) throws Exception {
         var jwtAuthConfigurer = new JWTAuthConfigurer();
         jwtAuthConfigurer.setAccessTokenStringSerializer(
@@ -47,6 +49,7 @@ public class SecurityConfig {
                         new DirectDecrypter(OctetSequenceKey.parse(refreshTokenKey))
                 )
         );
+        jwtAuthConfigurer.setJdbcTemplate(jdbcTemplate);
         return jwtAuthConfigurer;
     }
 
