@@ -5,6 +5,7 @@ import com.artemObrazumov.jwt_implementation.token.deserializer.AccessTokenJwsSt
 import com.artemObrazumov.jwt_implementation.token.deserializer.RefreshTokenJwsStringDeserializer;
 import com.artemObrazumov.jwt_implementation.token.serializer.AccessTokenJwsStringSerializer;
 import com.artemObrazumov.jwt_implementation.token.serializer.RefreshTokenJweStringSerializer;
+import com.artemObrazumov.jwt_implementation.token.user.BasicAuthUserDetailService;
 import com.nimbusds.jose.crypto.DirectDecrypter;
 import com.nimbusds.jose.crypto.DirectEncrypter;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -16,11 +17,17 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SecurityConfig {
+
+    @Bean
+    public UserDetailsService userDetailsService(JdbcTemplate jdbcTemplate) {
+        return new BasicAuthUserDetailService(jdbcTemplate);
+    }
 
     @Bean
     public JWTAuthConfigurer jwtAuthConfigurer(
