@@ -3,6 +3,9 @@ package com.artemObrazumov.jwt_implementation;
 import com.artemObrazumov.jwt_implementation.token.JWTAuthConfigurer;
 import com.artemObrazumov.jwt_implementation.token.deserializer.AccessTokenJwsStringDeserializer;
 import com.artemObrazumov.jwt_implementation.token.deserializer.RefreshTokenJwsStringDeserializer;
+import com.artemObrazumov.jwt_implementation.token.repository.DeactivatedTokensRepository;
+import com.artemObrazumov.jwt_implementation.token.repository.UserAuthorityRepository;
+import com.artemObrazumov.jwt_implementation.token.repository.UserRepository;
 import com.artemObrazumov.jwt_implementation.token.serializer.AccessTokenJwsStringSerializer;
 import com.artemObrazumov.jwt_implementation.token.serializer.RefreshTokenJweStringSerializer;
 import com.artemObrazumov.jwt_implementation.token.user.BasicAuthUserDetailService;
@@ -25,15 +28,18 @@ import org.springframework.stereotype.Component;
 public class SecurityConfig {
 
     @Bean
-    public UserDetailsService userDetailsService(JdbcTemplate jdbcTemplate) {
-        return new BasicAuthUserDetailService(jdbcTemplate);
+    public UserDetailsService userDetailsService(
+            UserRepository userRepository,
+            UserAuthorityRepository userAuthorityRepository
+    ) {
+        return new BasicAuthUserDetailService(userRepository, userAuthorityRepository);
     }
 
     @Bean
     public JWTAuthConfigurer jwtAuthConfigurer(
             @Value("${jwt.access-token-key}") String accessTokenKey,
             @Value("${jwt.refresh-token-key}") String refreshTokenKey,
-            JdbcTemplate jdbcTemplate
+            DeactivatedTokensRepository deactivatedTokensRepository
     ) throws Exception {
         var jwtAuthConfigurer = new JWTAuthConfigurer();
         jwtAuthConfigurer.setAccessTokenStringSerializer(
@@ -56,7 +62,7 @@ public class SecurityConfig {
                         new DirectDecrypter(OctetSequenceKey.parse(refreshTokenKey))
                 )
         );
-        jwtAuthConfigurer.setJdbcTemplate(jdbcTemplate);
+        jwtAuthConfigurer.setDeactivatedTokensRepository(deactivatedTokensRepository);
         return jwtAuthConfigurer;
     }
 

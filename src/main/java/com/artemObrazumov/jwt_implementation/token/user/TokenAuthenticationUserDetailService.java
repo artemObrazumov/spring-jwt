@@ -1,6 +1,7 @@
 package com.artemObrazumov.jwt_implementation.token.user;
 
 import com.artemObrazumov.jwt_implementation.token.Token;
+import com.artemObrazumov.jwt_implementation.token.repository.DeactivatedTokensRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,18 +15,16 @@ import java.time.Instant;
 public class TokenAuthenticationUserDetailService implements
         AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
 
-    private JdbcTemplate jdbcTemplate;
+    private final DeactivatedTokensRepository deactivatedTokensRepository;
 
-    public TokenAuthenticationUserDetailService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public TokenAuthenticationUserDetailService(DeactivatedTokensRepository deactivatedTokensRepository) {
+        this.deactivatedTokensRepository = deactivatedTokensRepository;
     }
 
     @Override
     public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken authToken) throws UsernameNotFoundException {
         if (authToken.getPrincipal() instanceof Token token) {
-            var isDeactivated = this.jdbcTemplate.queryForObject("""
-                    select exists(select id from t_deactivated_token where id = ?)
-                    """, Boolean.class, token.id());
+            var isDeactivated = deactivatedTokensRepository.existsById(token.id());
             var authorities = token.authorities()
                     .stream()
                     .map(SimpleGrantedAuthority::new)

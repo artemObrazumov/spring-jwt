@@ -1,5 +1,7 @@
 package com.artemObrazumov.jwt_implementation.token.filter;
 
+import com.artemObrazumov.jwt_implementation.token.entity.DeactivatedToken;
+import com.artemObrazumov.jwt_implementation.token.repository.DeactivatedTokensRepository;
 import com.artemObrazumov.jwt_implementation.token.user.TokenUser;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,10 +27,10 @@ public class JwtLogoutFilter extends OncePerRequestFilter {
 
     private SecurityContextRepository securityContextRepository = new RequestAttributeSecurityContextRepository();
 
-    private JdbcTemplate jdbcTemplate;
+    private final DeactivatedTokensRepository deactivatedTokensRepository;
 
-    public JwtLogoutFilter(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public JwtLogoutFilter(DeactivatedTokensRepository deactivatedTokensRepository) {
+        this.deactivatedTokensRepository = deactivatedTokensRepository;
     }
 
     @Override
@@ -42,8 +44,9 @@ public class JwtLogoutFilter extends OncePerRequestFilter {
                         context.getAuthentication().getAuthorities()
                                 .contains(new SimpleGrantedAuthority("JWT_REFRESH"))
                 ) {
-                    this.jdbcTemplate.update("INSERT INTO t_deactivated_token (id, c_keep_until) values (?, ?)",
-                            user.getToken().id(), Date.from(user.getToken().expiresAt()));
+                    this.deactivatedTokensRepository.save(
+                            new DeactivatedToken(user.getToken().id(), Date.from(user.getToken().expiresAt()))
+                    );
                 }
             }
             throw new AccessDeniedException("User must be authenticated with JWT");

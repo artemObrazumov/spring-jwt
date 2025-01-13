@@ -4,6 +4,7 @@ import com.artemObrazumov.jwt_implementation.token.converter.JWTAuthConverter;
 import com.artemObrazumov.jwt_implementation.token.filter.JwtLogoutFilter;
 import com.artemObrazumov.jwt_implementation.token.filter.RequestAccessTokenFilter;
 import com.artemObrazumov.jwt_implementation.token.filter.RequestJwtTokenFilter;
+import com.artemObrazumov.jwt_implementation.token.repository.DeactivatedTokensRepository;
 import com.artemObrazumov.jwt_implementation.token.user.TokenAuthenticationUserDetailService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpMethod;
@@ -30,7 +31,7 @@ public class JWTAuthConfigurer extends AbstractHttpConfigurer<JWTAuthConfigurer,
 
     private Function<String, Token> refreshTokenStringDeserializer;
 
-    private JdbcTemplate jdbcTemplate;
+    private DeactivatedTokensRepository deactivatedTokensRepository;
 
     @Override
     public void init(HttpSecurity builder) throws Exception {
@@ -60,7 +61,7 @@ public class JWTAuthConfigurer extends AbstractHttpConfigurer<JWTAuthConfigurer,
 
         var authenticationProvider = new PreAuthenticatedAuthenticationProvider();
         authenticationProvider.setPreAuthenticatedUserDetailsService(
-                new TokenAuthenticationUserDetailService(jdbcTemplate));
+                new TokenAuthenticationUserDetailService(deactivatedTokensRepository));
         builder.addFilterBefore(jwtAuthFilter, CsrfFilter.class)
                 .authenticationProvider(authenticationProvider);
 
@@ -69,7 +70,7 @@ public class JWTAuthConfigurer extends AbstractHttpConfigurer<JWTAuthConfigurer,
 
         builder.addFilterAfter(accessTokenFilter, ExceptionTranslationFilter.class);
 
-        var logoutFilter = new JwtLogoutFilter(jdbcTemplate);
+        var logoutFilter = new JwtLogoutFilter(deactivatedTokensRepository);
         builder.addFilterAfter(logoutFilter, ExceptionTranslationFilter.class);
     }
 
@@ -89,7 +90,7 @@ public class JWTAuthConfigurer extends AbstractHttpConfigurer<JWTAuthConfigurer,
         this.refreshTokenStringDeserializer = refreshTokenStringDeserializer;
     }
 
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public void setDeactivatedTokensRepository(DeactivatedTokensRepository deactivatedTokensRepository) {
+        this.deactivatedTokensRepository = deactivatedTokensRepository;
     }
 }
