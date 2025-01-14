@@ -47,6 +47,8 @@ public class JwtLogoutFilter extends OncePerRequestFilter {
                     this.deactivatedTokensRepository.save(
                             new DeactivatedToken(user.getToken().id(), Date.from(user.getToken().expiresAt()))
                     );
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    return;
                 }
             }
             throw new AccessDeniedException("User must be authenticated with JWT");

@@ -16,8 +16,6 @@ public class BasicAuthUserDetailService implements UserDetailsService {
     public BasicAuthUserDetailService(UserRepository userRepository, UserAuthorityRepository userAuthorityRepository) {
         this.userRepository = userRepository;
         this.userAuthorityRepository = userAuthorityRepository;
-
-        userRepository.save(new UserEntity(null, "j.jameson", "{noop}password"));
     }
 
     @Override
