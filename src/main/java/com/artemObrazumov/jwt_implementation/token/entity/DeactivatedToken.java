@@ -2,7 +2,6 @@ package com.artemObrazumov.jwt_implementation.token.entity;
 
 import jakarta.persistence.*;
 
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
 

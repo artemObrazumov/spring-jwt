@@ -4,8 +4,6 @@ import com.artemObrazumov.jwt_implementation.token.Token;
 import com.nimbusds.jose.*;
 import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
-
 import java.sql.Date;
 import java.util.function.Function;
 

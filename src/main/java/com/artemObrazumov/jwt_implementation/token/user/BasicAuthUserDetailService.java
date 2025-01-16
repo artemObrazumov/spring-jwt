@@ -1,8 +1,9 @@
 package com.artemObrazumov.jwt_implementation.token.user;
 
-import com.artemObrazumov.jwt_implementation.token.entity.UserEntity;
+import com.artemObrazumov.jwt_implementation.token.entity.UserAuthority;
 import com.artemObrazumov.jwt_implementation.token.repository.UserAuthorityRepository;
 import com.artemObrazumov.jwt_implementation.token.repository.UserRepository;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,6 +31,10 @@ public class BasicAuthUserDetailService implements UserDetailsService {
             return User.builder()
                     .username(user.getName())
                     .password(user.getPassword())
+                    .authorities(authorities.stream()
+                            .map(UserAuthority::getAuthority)
+                            .map(SimpleGrantedAuthority::new)
+                            .toList())
                     .build();
         } catch (Exception e) {
             e.printStackTrace();

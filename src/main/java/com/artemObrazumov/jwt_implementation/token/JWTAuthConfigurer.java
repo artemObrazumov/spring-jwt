@@ -8,7 +8,6 @@ import com.artemObrazumov.jwt_implementation.token.repository.DeactivatedTokensR
 import com.artemObrazumov.jwt_implementation.token.user.TokenAuthenticationUserDetailService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpMethod;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -34,7 +33,7 @@ public class JWTAuthConfigurer extends AbstractHttpConfigurer<JWTAuthConfigurer,
     private DeactivatedTokensRepository deactivatedTokensRepository;
 
     @Override
-    public void init(HttpSecurity builder) throws Exception {
+    public void init(HttpSecurity builder) {
         var csrfConfigurer = builder.getConfigurer(CsrfConfigurer.class);
         if (csrfConfigurer != null) {
             csrfConfigurer.ignoringRequestMatchers(
@@ -43,7 +42,7 @@ public class JWTAuthConfigurer extends AbstractHttpConfigurer<JWTAuthConfigurer,
     }
 
     @Override
-    public void configure(HttpSecurity builder) throws Exception {
+    public void configure(HttpSecurity builder) {
         var requestJwtFilter = new RequestJwtTokenFilter();
         requestJwtFilter.setAccessTokenStringSerializer(this.accessTokenStringSerializer);
         requestJwtFilter.setRefreshTokenStringSerializer(this.refreshTokenStringSerializer);

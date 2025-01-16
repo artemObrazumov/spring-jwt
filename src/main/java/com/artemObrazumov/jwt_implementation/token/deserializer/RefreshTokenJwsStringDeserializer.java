@@ -2,10 +2,7 @@ package com.artemObrazumov.jwt_implementation.token.deserializer;
 
 import com.artemObrazumov.jwt_implementation.token.Token;
 import com.nimbusds.jose.JWEDecrypter;
-import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jwt.EncryptedJWT;
-import com.nimbusds.jwt.SignedJWT;
-
 import java.util.UUID;
 import java.util.function.Function;
 

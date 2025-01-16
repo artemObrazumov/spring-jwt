@@ -10,12 +10,21 @@ public class UserAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(targetEntity = UserEntity.class)
     @JoinColumn(name = "id_user", nullable = false)
     private UserEntity user;
 
     @Column(name = "authority", nullable = false)
     private String authority;
+
+    public UserAuthority() {
+    }
+
+    public UserAuthority(Long id, UserEntity user, String authority) {
+        this.id = id;
+        this.user = user;
+        this.authority = authority;
+    }
 
     public UserEntity getUser() {
         return user;

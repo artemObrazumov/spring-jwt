@@ -21,7 +21,6 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.function.Function;
 
 public class RequestJwtTokenFilter extends OncePerRequestFilter {

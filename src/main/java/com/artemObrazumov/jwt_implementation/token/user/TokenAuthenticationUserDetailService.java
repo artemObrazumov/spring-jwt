@@ -2,8 +2,6 @@ package com.artemObrazumov.jwt_implementation.token.user;
 
 import com.artemObrazumov.jwt_implementation.token.Token;
 import com.artemObrazumov.jwt_implementation.token.repository.DeactivatedTokensRepository;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
