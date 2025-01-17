@@ -17,14 +17,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
 
-@Component
-@ComponentScan(basePackages = {"com.artemObrazumov.*"})
-@EntityScan(basePackages = {"com.artemObrazumov.*"})
-//@EnableJpaRepositories(basePackages = {"com.artemObrazumov.*"})
+@Configuration
+@ComponentScan(basePackages = {"com.artemObrazumov.token"})
+@EntityScan(basePackages = {"com.artemObrazumov.token"})
+@EnableJpaRepositories(basePackages = {"com.artemObrazumov.token"})
 public class JWTAuthConfig {
 
     @Bean
